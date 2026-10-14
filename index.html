@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Escolar</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f1f4fa;color:#25314b}
+header{background:linear-gradient(120deg,#172554,#3459d9);color:white;padding:25px;text-align:center}
+header h1{margin-bottom:8px}
+nav{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:14px;background:white;box-shadow:0 2px 8px #0001}
+button{background:#3459d9;color:white;border:0;border-radius:7px;padding:11px 15px;cursor:pointer;font-weight:bold}
+button:hover{background:#233fa8}
+main{max-width:1200px;margin:25px auto;padding:0 15px;min-height:65vh}
+.pagina{display:none;background:white;padding:25px;border-radius:12px;box-shadow:0 4px 18px #1725540a}
+.pagina.ativa{display:block}
+h2{color:#172554;margin-bottom:20px}
+h3{margin-bottom:10px}
+.cartoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;margin-bottom:25px}
+.cartao{background:#f0f3ff;border:1px solid #e0e7ff;padding:22px;border-radius:10px}
+.cartao h3{color:#3459d9;font-size:15px}
+.numero{font-size:30px;font-weight:bold}
+form{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:13px;margin-bottom:25px}
+label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:bold}
+input,select{width:100%;padding:12px;border:1px solid #d9dfeb;border-radius:7px;background:white}
+input:focus,select:focus{outline:2px solid #c6d3ff}
+.form-botao{align-self:end}
+.tabela-container{overflow-x:auto;margin:15px 0}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #e5eaf3;font-size:13px}
+th{background:#edf1ff;color:#243b84}
+tbody tr:hover{background:#f8faff}
+.apto{color:#138354;font-weight:bold}
+.recurso{color:#b77718;font-weight:bold}
+.nao-apto{color:#c94343;font-weight:bold}
+.pendente{color:#68738a;font-weight:bold}
+.eliminar{background:#c94343;padding:8px 10px}
+.aviso{background:#fff8e8;color:#78612b;padding:14px;border-radius:8px;line-height:1.6;font-size:13px;margin-top:15px}
+ul{padding-left:25px;line-height:2}
+footer{background:#172554;color:white;text-align:center;padding:20px;font-size:12px;margin-top:30px}
+@media(max-width:500px){header h1{font-size:23px}nav button{flex:1 1 40%;font-size:12px;padding:10px 5px}.pagina{padding:15px 10px}form{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>🎓 Portal Escolar</h1><p>Sistema de Gestão Académica</p></header>
+<nav>
+<button onclick="mostrarPagina('inicio')">Início</button>
+<button onclick="mostrarPagina('alunos')">Alunos</button>
+<button onclick="mostrarPagina('notas')">Notas</button>
+<button onclick="mostrarPagina('cursos')">Cursos e Disciplinas</button>
+<button onclick="mostrarPagina('horarios')">Horários</button>
+</nav>
+<main>
+<section id="inicio" class="pagina ativa">
+<h2>Painel Inicial</h2>
+<div class="cartoes">
+<div class="cartao"><h3>Total de Alunos</h3><p class="numero" id="totalAlunos">0</p></div>
+<div class="cartao"><h3>Aptos</h3><p class="numero" id="totalAptos">0</p></div>
+<div class="cartao"><h3>Em Recurso</h3><p class="numero" id="totalRecurso">0</p></div>
+<div class="cartao"><h3>Não Aptos</h3><p class="numero" id="totalNaoAptos">0</p></div>
+</div>
+<h3>Bem-vindo ao Portal Escolar!</h3><p>Gere os alunos, as notas, os cursos, as disciplinas e os horários num só lugar.</p>
+</section>
+<section id="alunos" class="pagina">
+<h2>Cadastro de Alunos</h2>
+<form id="formAluno">
+<label>Nome completo<input id="nome" required placeholder="Nome do aluno"></label>
+<label>Número do aluno<input id="numero" required placeholder="Ex.: 001"></label>
+<label>Turma<input id="turma" required placeholder="Ex.: 12.ª A"></label>
+<label>Classe<select id="classe" required><option value="">Seleccionar classe</option><option>10.ª classe</option><option>11.ª classe</option><option>12.ª classe</option><option>13.ª classe</option></select></label>
+<label>Curso<select id="curso" required><option value="">Seleccionar curso</option><option>Informática</option><option>Enfermagem</option><option>Contabilidade</option><option>Electrotecnia</option><option>Gestão Empresarial</option><option>Ciências Económicas e Jurídicas</option><option>Ciências Físicas e Biológicas</option></select></label>
+<button class="form-botao" type="submit">Cadastrar Aluno</button>
+</form>
+<h2>Lista de Alunos</h2><input id="pesquisaAluno" placeholder="Pesquisar por nome, número, turma ou curso">
+<div class="tabela-container"><table><thead><tr><th>Número</th><th>Nome</th><th>Turma</th><th>Classe</th><th>Curso</th><th>Acções</th></tr></thead><tbody id="listaAlunos"></tbody></table></div>
+<p id="semAlunos">Ainda não existem alunos cadastrados.</p>
+</section>
+<section id="notas" class="pagina">
+<h2>Registo de Notas</h2>
+<form id="formNotas">
+<label>Aluno<select id="alunoNotas" required><option value="">Seleccionar aluno</option></select></label>
+<label>Disciplina<select id="disciplina" required><option value="">Seleccionar disciplina</option><option>Matemática</option><option>Língua Portuguesa</option><option>Inglês</option><option>Informática</option><option>Física</option><option>Química</option><option>Biologia</option><option>Empreendedorismo</option><option>Educação Física</option></select></label>
+<label>1.º Trimestre<input type="number" id="nota1" min="0" max="20" step="0.1" required></label>
+<label>2.º Trimestre<input type="number" id="nota2" min="0" max="20" step="0.1" required></label>
+<label>3.º Trimestre<input type="number" id="nota3" min="0" max="20" step="0.1" required></label>
+<button class="form-botao" type="submit">Guardar Notas</button>
+</form>
+<h2>Boletim de Notas</h2>
+<div class="tabela-container"><table><thead><tr><th>Aluno</th><th>Disciplina</th><th>1.º Tri.</th><th>2.º Tri.</th><th>3.º Tri.</th><th>Média</th><th>Resultado</th><th>Acção</th></tr></thead><tbody id="listaNotas"></tbody></table></div>
+<p id="semNotas">Ainda não existem notas registadas.</p>
+<div class="aviso"><strong>Critérios de demonstração:</strong> média igual ou superior a 10 = Apto; média de 7 a menos de 10 = Recurso; média inferior a 7 = Não apto. Confirma as regras oficiais da tua escola.</div>
+</section>
+<section id="cursos" class="pagina">
+<h2>Cursos Disponíveis</h2>
+<div class="cartoes">
+<div class="cartao"><h3>Informática</h3><p>Programação, redes, bases de dados e sistemas.</p></div>
+<div class="cartao"><h3>Enfermagem</h3><p>Anatomia, saúde e cuidados de enfermagem.</p></div>
+<div class="cartao"><h3>Contabilidade</h3><p>Contabilidade, economia e gestão.</p></div>
+<div class="cartao"><h3>Electrotecnia</h3><p>Electricidade, circuitos e instalações.</p></div>
+</div>
+<h2>Disciplinas</h2><ul><li>Matemática</li><li>Língua Portuguesa</li><li>Inglês</li><li>Informática</li><li>Física</li><li>Química</li><li>Biologia</li><li>Empreendedorismo</li><li>Educação Física</li></ul>
+</section>
+<section id="horarios" class="pagina">
+<h2>Horário Escolar — 12.ª Classe</h2>
+<div class="tabela-container"><table><thead><tr><th>Horário</th><th>Segunda</th><th>Terça</th><th>Quarta</th><th>Quinta</th><th>Sexta</th></tr></thead><tbody>
+<tr><td>08:00–08:45</td><td>Matemática</td><td>Português</td><td>Informática</td><td>Matemática</td><td>Inglês</td></tr>
+<tr><td>08:45–09:30</td><td>Português</td><td>Física</td><td>Matemática</td><td>Química</td><td>Biologia</td></tr>
+<tr><td>09:30–10:15</td><td>Inglês</td><td>Matemática</td><td>Física</td><td>Informática</td><td>Português</td></tr>
+<tr><td>10:15–10:35</td><td colspan="5" style="text-align:center">INTERVALO</td></tr>
+<tr><td>10:35–11:20</td><td>Informática</td><td>Química</td><td>Português</td><td>Inglês</td><td>Matemática</td></tr>
+<tr><td>11:20–12:05</td><td>Biologia</td><td>Matemática</td><td>Física</td><td>Informática</td><td>Educação Física</td></tr>
+</tbody></table></div>
+<p class="aviso">Este horário é um exemplo. Altera-o de acordo com a tua escola.</p>
+</section>
+</main>
+<footer>Portal Escolar &copy; 2026 — Sistema de Gestão Académica</footer>
+<script>
+const CHAVE="portal_escolar_dados_unico";
+let alunos=[];
+try{alunos=JSON.parse(localStorage.getItem(CHAVE)||"[]");if(!Array.isArray(alunos))alunos=[];}catch(e){alunos=[];}
+function guardarDados(){try{localStorage.setItem(CHAVE,JSON.stringify(alunos));}catch(e){alert("Não foi possível guardar os dados neste navegador.");}}
+function mostrarPagina(id){document.querySelectorAll(".pagina").forEach(p=>p.classList.remove("ativa"));document.getElementById(id).classList.add("ativa");}
+function calcularMedia(n1,n2,n3){return(Number(n1)+Number(n2)+Number(n3))/3;}
+function obterResultado(m){if(m>=10)return"Apto";if(m>=7)return"Recurso";return"Não apto";}
+function formatarMedia(m){return m.toLocaleString("pt-PT",{minimumFractionDigits:1,maximumFractionDigits:1});}
+function classeResultado(r){if(r==="Apto")return"apto";if(r==="Recurso")return"recurso";if(r==="Não apto")return"nao-apto";return"pendente";}
+function mediaGeral(a){if(!a.notas.length)return null;return a.notas.reduce((s,n)=>s+calcularMedia(n.nota1,n.nota2,n.nota3),0)/a.notas.length;}
+function resultadoGeral(a){const m=mediaGeral(a);return m===null?"Pendente":obterResultado(m);}
+document.getElementById("formAluno").addEventListener("submit",function(e){
+e.preventDefault();const nome=document.getElementById("nome").value.trim(),numero=document.getElementById("numero").value.trim(),turma=document.getElementById("turma").value.trim(),classe=document.getElementById("classe").value,curso=document.getElementById("curso").value;
+if(alunos.some(a=>a.numero.toLowerCase()===numero.toLowerCase())){alert("Este número de aluno já está cadastrado!");return;}
+alunos.push({id:Date.now().toString()+Math.random().toString(36).slice(2),nome,numero,turma,classe,curso,notas:[]});guardarDados();actualizarSite();this.reset();alert("Aluno cadastrado com sucesso!");
+});
+document.getElementById("formNotas").addEventListener("submit",function(e){
+e.preventDefault();const id=document.getElementById("alunoNotas").value,disciplina=document.getElementById("disciplina").value,nota1=Number(document.getElementById("nota1").value),nota2=Number(document.getElementById("nota2").value),nota3=Number(document.getElementById("nota3").value),aluno=alunos.find(a=>a.id===id);
+if(!aluno){alert("Selecciona um aluno.");return;}
+if([nota1,nota2,nota3].some(n=>!Number.isFinite(n)||n<0||n>20)){alert("As notas devem estar entre 0 e 20 valores.");return;}
+if(aluno.notas.some(n=>n.disciplina===disciplina)){alert("Já existem notas para esta disciplina deste aluno.");return;}
+aluno.notas.push({disciplina,nota1,nota2,nota3});guardarDados();actualizarSite();this.reset();alert("Notas guardadas com sucesso!");
+});
+function eliminarAluno(id){const a=alunos.find(x=>x.id===id);if(!a)return;if(!confirm("Eliminar "+a.nome+" e todas as suas notas?"))return;alunos=alunos.filter(x=>x.id!==id);guardarDados();actualizarSite();}
+function eliminarNota(id,i){const a=alunos.find(x=>x.id===id);if(!a||!a.notas[i])return;if(!confirm("Queres eliminar este registo de notas?"))return;a.notas.splice(i,1);guardarDados();actualizarSite();}
+function actualizarContadores(){document.getElementById("totalAlunos").textContent=alunos.length;document.getElementById("totalAptos").textContent=alunos.filter(a=>resultadoGeral(a)==="Apto").length;document.getElementById("totalRecurso").textContent=alunos.filter(a=>resultadoGeral(a)==="Recurso").length;document.getElementById("totalNaoAptos").textContent=alunos.filter(a=>resultadoGeral(a)==="Não apto").length;}
+function actualizarListaAlunos(){const tabela=document.getElementById("listaAlunos"),pesquisa=document.getElementById("pesquisaAluno").value.toLowerCase();tabela.innerHTML="";const filtrados=alunos.filter(a=>[a.nome,a.numero,a.turma,a.curso].some(v=>v.toLowerCase().includes(pesquisa)));document.getElementById("semAlunos").style.display=filtrados.length?"none":"block";
+filtrados.forEach(a=>{const tr=document.createElement("tr");[a.numero,a.nome,a.turma,a.classe,a.curso].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});const td=document.createElement("td"),b=document.createElement("button");b.textContent="Eliminar";b.className="eliminar";b.onclick=()=>eliminarAluno(a.id);td.appendChild(b);tr.appendChild(td);tabela.appendChild(tr);});}
+document.getElementById("pesquisaAluno").addEventListener("input",actualizarListaAlunos);
+function actualizarSelectAlunos(){const s=document.getElementById("alunoNotas"),old=s.value;s.innerHTML='<option value="">Seleccionar aluno</option>';alunos.forEach(a=>{const o=document.createElement("option");o.value=a.id;o.textContent=a.nome+" - "+a.numero;s.appendChild(o);});if(alunos.some(a=>a.id===old))s.value=old;}
+function actualizarListaNotas(){const tabela=document.getElementById("listaNotas");tabela.innerHTML="";let qtd=0;alunos.forEach(a=>a.notas.forEach((n,i)=>{qtd++;const m=calcularMedia(n.nota1,n.nota2,n.nota3),r=obterResultado(m),tr=document.createElement("tr");[a.nome,n.disciplina,n.nota1,n.nota2,n.nota3,formatarMedia(m)].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});const tdR=document.createElement("td");tdR.textContent=r;tdR.className=classeResultado(r);tr.appendChild(tdR);const tdA=document.createElement("td"),b=document.createElement("button");b.textContent="Eliminar";b.className="eliminar";b.onclick=()=>eliminarNota(a.id,i);tdA.appendChild(b);tr.appendChild(tdA);tabela.appendChild(tr);}));document.getElementById("semNotas").style.display=qtd?"none":"block";}
+function actualizarSite(){actualizarContadores();actualizarListaAlunos();actualizarSelectAlunos();actualizarListaNotas();}
+actualizarSite();
+</script>
+</body>
+</html>
